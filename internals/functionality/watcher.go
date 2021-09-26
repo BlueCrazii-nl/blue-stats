@@ -2,7 +2,6 @@ package functionality
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	utils "github.com/Yadiiiig/blue-stats/internals/utils"
@@ -16,21 +15,18 @@ func (s *Collection) Watcher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, userAgent := utils.GetId(r)
+	defer r.Body.Close()
 
-	// Can probably be replaced with CORS
-	if !utils.CheckAgent(userAgent) {
-		w.WriteHeader(http.StatusForbidden)
-		fmt.Fprintf(w, "You are not allowed to perform this action.")
-		return
-	}
+	id := utils.GetId(r)
 
+	s.Lock()
 	if !s.Saved.SaveUser(id, b.Stream) {
 		w.WriteHeader(http.StatusForbidden)
-		fmt.Fprintf(w, "Please stop trying.")
+		s.Unlock()
 		return
 	} else {
 		w.WriteHeader(http.StatusOK)
+		s.Unlock()
 		return
 	}
 }

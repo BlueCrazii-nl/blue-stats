@@ -1,6 +1,8 @@
 package utils
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type Utilities struct {
 	Connection  *Connection

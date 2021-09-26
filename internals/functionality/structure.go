@@ -1,8 +1,13 @@
 package functionality
 
-import utils "github.com/Yadiiiig/blue-stats/internals/utils"
+import (
+	"sync"
+
+	utils "github.com/Yadiiiig/blue-stats/internals/utils"
+)
 
 type Collection struct {
+	sync.RWMutex
 	Saved      *utils.ActiveUsers
 	Connection *utils.Connection
 }
